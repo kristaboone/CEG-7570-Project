@@ -20,7 +20,20 @@ void DataClass::write(std::ostream& out, const std::string& delim) const
 	}
 }
 
-std::vector<std::vector<double>> DataClass::split(const size_t& nPointsToRemove, bool removeRemaining)
+std::vector<std::vector<double>> DataClass::split()
+{
+	size_t nPointsToRemove = dataPoints_.size() / 2.0;
+
+	std::vector<std::vector<double>> newPoints;
+	for (size_t i = 0; i < nPointsToRemove; ++i)
+	{
+		newPoints.push_back(dataPoints_.back());
+		dataPoints_.pop_back();
+	}
+	return newPoints;
+}
+
+std::vector<std::vector<double>> DataClass::splitEven(const size_t& nPointsToRemove)
 {
 	std::vector<std::vector<double>> newPoints;
 	for (size_t i = 0; i < nPointsToRemove; ++i)
@@ -28,14 +41,11 @@ std::vector<std::vector<double>> DataClass::split(const size_t& nPointsToRemove,
 		newPoints.push_back(dataPoints_.back());
 		dataPoints_.pop_back();
 	}
-	
-	if (removeRemaining)
+
+	size_t extraPts = getNPoints() - nPointsToRemove;
+	for (size_t i = 0; i < extraPts; ++i)
 	{
-		size_t extraPts = getNPoints() - nPointsToRemove;
-		for (size_t i = 0; i < extraPts; ++i)
-		{
-			dataPoints_.pop_back();
-		}
+		dataPoints_.pop_back();
 	}
 
 	return newPoints;

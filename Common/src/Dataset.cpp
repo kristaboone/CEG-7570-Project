@@ -80,18 +80,33 @@ Dataset::Dataset(const size_t nfeatures, const size_t nclasses, const size_t npo
 	}
 }
 
-Dataset Dataset::split(bool removeRemaining)
+Dataset Dataset::splitEven()
 {
 	size_t npoints = std::ceil((double)this->getMinPointsInClass() / 2.0);
-	npoints_ = (removeRemaining) ? npoints*nclasses_ : npoints_-npoints;
+	npoints_ = npoints*nclasses_;
 
 	std::vector<DataClass> newclasses;
 	for (auto c = classes_.begin(); c != classes_.end(); ++c)
 	{
-		newclasses.push_back( DataClass(c->getID(), c->split(npoints, removeRemaining)) );
+		newclasses.push_back( DataClass(c->getID(), c->splitEven(npoints)) );
 	}
 
 	return Dataset(nfeatures_, nclasses_, npoints*nclasses_, newclasses);
+}
+
+Dataset Dataset::split()
+{
+	size_t nPointsRemoved = 0;
+
+	std::vector<DataClass> newclasses;
+	for (auto c = classes_.begin(); c != classes_.end(); ++c)
+	{
+		nPointsRemoved += c->getNPoints() / 2.0;
+		newclasses.push_back(DataClass(c->getID(), c->split()));
+	}
+
+	npoints_ = nPointsRemoved;
+	return Dataset(nfeatures_, nclasses_, nPointsRemoved, newclasses);
 }
 
 void Dataset::write(std::ostream& out, const std::string& delim) const
