@@ -155,15 +155,7 @@ size_t Dataset::getNFeatures() const
 
 const DataClass& Dataset::getClass(const size_t& classID) const
 {
-	for (auto it = classes_.begin(); it != classes_.end(); ++it)
-	{
-		if (it->getID() == classID)
-		{
-			return *it;
-		}
-	}
-
-	throw std::runtime_error("Unable to find class in dataset");
+	return classes_[classID];
 }
 
 double Dataset::calculateFDRForFeature(const size_t& featureID) const
