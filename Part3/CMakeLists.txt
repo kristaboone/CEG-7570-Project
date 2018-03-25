@@ -1,0 +1,13 @@
+CMAKE_MINIMUM_REQUIRED (VERSION 3.0)
+PROJECT (Part3)
+
+INCLUDE_DIRECTORIES ("${CMAKE_CURRENT_SOURCE_DIR}")
+INCLUDE_DIRECTORIES ("${CMAKE_CURRENT_SOURCE_DIR}/../Common/include")
+
+set(SOURCE
+   ${CMAKE_CURRENT_SOURCE_DIR}/../Common/src/DataClass.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/../Common/src/Dataset.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/../Common/src/BayesClassifier.cpp
+)
+ 
+ADD_EXECUTABLE (Part3 Part3.cpp ${SOURCE})
