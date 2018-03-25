@@ -80,6 +80,11 @@ bool DataClass::addDataPoint(const std::vector<double>& datapoint)
 	}
 }
 
+double DataClass::getPoint(const size_t& pointNum, const size_t& featureID) const
+{
+	return dataPoints_[pointNum][featureID];
+}
+
 // Calculates mean for feature = featureID
 double DataClass::calculateFeatureMean(const size_t& featureID) const
 {

@@ -17,6 +17,7 @@ public:
 	size_t getID() const;
 	size_t getNPoints() const;
 	bool addDataPoint(const std::vector<double>& datapoint);
+	double getPoint(const size_t& pointNum, const size_t& featureID) const;
 
 	double getFeatureMin(const size_t& featureID) const;
 	double getFeatureMax(const size_t& featureID) const;
