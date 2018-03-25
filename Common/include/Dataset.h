@@ -7,7 +7,8 @@ class Dataset
 public:
 	Dataset(const std::string& inputFile);
 	Dataset(const size_t nfeatures, const size_t nclasses, const size_t npoints, const std::vector<DataClass> classes);
-	Dataset split();
+
+	Dataset split(bool removeRemaining);
 
 	void write(std::ostream& out, const std::string& delim) const;
 	void normalize(const double& a, const double& b);
