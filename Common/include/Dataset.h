@@ -13,6 +13,7 @@ public:
 	void write(std::ostream& out, const std::string& delim) const;
 	void normalize(const double& a, const double& b);
 
+	size_t getNPoints() const;
 	size_t getNClasses() const;
 	size_t getNFeatures() const;
 	const DataClass& getClass(const size_t& classID) const;

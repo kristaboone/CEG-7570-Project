@@ -138,6 +138,11 @@ void Dataset::normalize(const double& a, const double& b)
 	}
 }
 
+size_t Dataset::getNPoints() const
+{
+	return npoints_;
+}
+
 size_t Dataset::getNClasses() const
 {
 	return nclasses_;
