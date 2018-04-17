@@ -1,11 +1,18 @@
+/*
+	 BayesClassifier.h
+	 Created by Krista Vanderhorst (2018)
+
+	 Trains an n-class 1D classifier using naive Bayes decision theory.
+	 Gaussian distributed input is assumed.
+*/
 #pragma once
 #include "Dataset.h"
 
 class BayesClassifier
 {
 public:
-	BayesClassifier(const Dataset& ds, const size_t& feature, const double& featureMin, const double& featureMax);
-	int classify(const double& datapoint) const;
+	BayesClassifier(const Dataset& ds, size_t feature, double featureMin, double featureMax);
+	int classify(double datapoint) const;
 
 	void writeDistributions2CSV(const std::string& filename) const;
 

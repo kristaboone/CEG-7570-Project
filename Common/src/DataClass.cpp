@@ -1,13 +1,46 @@
 #include "DataClass.h"
 
-// Initialize DataClass with ID
-DataClass::DataClass(const size_t& id) : id_(id)
+/*
+	DataClass::DataClass(constructor)
+	- Create data class with an id = id
+*/
+DataClass::DataClass(size_t id)
+: id_(id)
 { /* NO-OP */ }
 
-// Initialize DataClass with ID and data points
-DataClass::DataClass(const size_t& id, const std::vector< std::vector<double> >& datapoints) : id_(id), dataPoints_(datapoints)
+/*
+	DataClass::DataClass(constructor)
+	- Create data class with an id = id and datapoints = datapoints
+*/
+DataClass::DataClass(size_t id, const std::vector< std::vector<double> >& datapoints)
+: id_(id), dataPoints_(datapoints)
 { /* NO-OP */ }
 
+/*
+	DataClass::getID()
+	- Returns class ID
+*/
+size_t DataClass::getID() const
+{ return id_; }
+
+/*
+	DataClass::getNPoints()
+	- Returns the number of points in the class
+*/
+size_t DataClass::getNPoints() const
+{ return dataPoints_.size(); }
+
+/*
+	DataClass::getPoint()
+	- Return the feature value at point pointNum
+*/
+double DataClass::getPoint(size_t pointNum, size_t featureID) const
+{ return dataPoints_[pointNum][featureID]; }
+
+/*
+	DataClass::write()
+	- Writes out the class's datapoints with a particular delimiter
+*/
 void DataClass::write(std::ostream& out, const std::string& delim) const
 {
 	for (size_t i = 0; i < dataPoints_.size(); ++i)
@@ -20,6 +53,10 @@ void DataClass::write(std::ostream& out, const std::string& delim) const
 	}
 }
 
+/*
+	DataClass::split()
+	- Removes and returns the second half of the points in the class.
+*/
 std::vector<std::vector<double>> DataClass::split()
 {
 	size_t nPointsToRemove = dataPoints_.size() / 2.0;
@@ -33,7 +70,11 @@ std::vector<std::vector<double>> DataClass::split()
 	return newPoints;
 }
 
-std::vector<std::vector<double>> DataClass::splitEven(const size_t& nPointsToRemove)
+/*
+	DataClass::splitEven()
+	- Removes and returns the last nPointsToRemove points in the class.
+*/
+std::vector<std::vector<double>> DataClass::splitEven(size_t nPointsToRemove)
 {
 	std::vector<std::vector<double>> newPoints;
 	for (size_t i = 0; i < nPointsToRemove; ++i)
@@ -51,8 +92,11 @@ std::vector<std::vector<double>> DataClass::splitEven(const size_t& nPointsToRem
 	return newPoints;
 }
 
-void DataClass::normalizeFeature(const double& a, const double& b, const double& min,
-	const double& max, const size_t& featureID)
+/*
+	DataClass::normalizeFeature()
+	- Scales a particular feature between values a and b
+*/
+void DataClass::normalizeFeature(double a, double b, double min, double max, size_t featureID)
 {
 	for (size_t i = 0; i < dataPoints_.size(); ++i)
 	{
@@ -61,20 +105,12 @@ void DataClass::normalizeFeature(const double& a, const double& b, const double&
 	}
 }
 
-// Return ID of DataClass
-size_t DataClass::getID() const
-{
-	return id_;
-}
-
-size_t DataClass::getNPoints() const
-{
-	return dataPoints_.size();
-}
-
-// Add a datapoint to the datapoints.
-// Length of datapoint must be equal to the
-// number of features provided in previous datapoints.
+/*
+	DataClass::addDataPoint()
+	- Add a datapoint to the list of datapoints.
+	- Number of features in a datapoint must be equal to the number of features
+	  in previous datapoints.
+*/
 bool DataClass::addDataPoint(const std::vector<double>& datapoint)
 {
 	size_t nPoints = dataPoints_.size();
@@ -90,13 +126,11 @@ bool DataClass::addDataPoint(const std::vector<double>& datapoint)
 	}
 }
 
-double DataClass::getPoint(const size_t& pointNum, const size_t& featureID) const
-{
-	return dataPoints_[pointNum][featureID];
-}
-
-// Calculates mean for feature = featureID
-double DataClass::calculateFeatureMean(const size_t& featureID) const
+/*
+	DataClass::calculateFeatureMean()
+	- Calculate the mean of a particular feature
+*/
+double DataClass::calculateFeatureMean(size_t featureID) const
 {
 	double sum = 0.0;
 
@@ -108,8 +142,11 @@ double DataClass::calculateFeatureMean(const size_t& featureID) const
 	return sum / dataPoints_.size();
 }
 
-// Calculates variance for feature = featureID
-double DataClass::calculateFeatureVariance(const size_t& featureID) const
+/*
+	DataClass::calculateFeatureVariance()
+	- Calculate the variance of a particular feature
+*/
+double DataClass::calculateFeatureVariance(size_t featureID) const
 {
 	double mean = this->calculateFeatureMean(featureID);
 	double sqrSum = 0.0;
@@ -122,7 +159,11 @@ double DataClass::calculateFeatureVariance(const size_t& featureID) const
 	return sqrSum / (dataPoints_.size() - 1);
 }
 
-double DataClass::getFeatureMin(const size_t& featureID) const
+/*
+	DataClass::getFeatureMin()
+	- Find the minimum value for a particular feature
+*/
+double DataClass::getFeatureMin(size_t featureID) const
 {
 	double min = DBL_MAX;
 	for (auto it = dataPoints_.begin(); it != dataPoints_.end(); ++it)
@@ -132,7 +173,11 @@ double DataClass::getFeatureMin(const size_t& featureID) const
 	return min;
 }
 
-double DataClass::getFeatureMax(const size_t& featureID) const
+/*
+	DataClass::getFeatureMax()
+	- Find the maximum value for a particular feature
+*/
+double DataClass::getFeatureMax(size_t featureID) const
 {
 	double max = -DBL_MAX;
 	for (auto it = dataPoints_.begin(); it != dataPoints_.end(); ++it)

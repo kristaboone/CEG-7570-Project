@@ -4,6 +4,12 @@
 #include <fstream>
 #include <sstream>
 
+/*
+	Dataset::Dataset(constructor)
+	- Create a dataset from a file of the format:
+	  <npoints>  <nfeatures> <nclasses>
+		<feature1> <feature2>      ...    <featureN> <classID>
+*/
 Dataset::Dataset(const std::string& inputFile)
 {
 	std::ifstream in(inputFile);
@@ -71,7 +77,11 @@ Dataset::Dataset(const std::string& inputFile)
 	}
 }
 
-Dataset::Dataset(const size_t nfeatures, const size_t nclasses, const size_t npoints, const std::vector<DataClass> classes)
+/*
+	Dataset::Dataset(constructor)
+	- Create a dataset from a set of DataClasses
+*/
+Dataset::Dataset(size_t nfeatures, size_t nclasses, size_t npoints, const std::vector<DataClass>& classes)
 	: nfeatures_(nfeatures), nclasses_(nclasses), npoints_(npoints)
 {
 	for (auto it = classes.begin(); it != classes.end(); ++it)
@@ -80,6 +90,53 @@ Dataset::Dataset(const size_t nfeatures, const size_t nclasses, const size_t npo
 	}
 }
 
+/*
+	Dataset::getNPoints()
+	- Return the number of points in the dataset
+*/
+size_t Dataset::getNPoints() const
+{ return npoints_; }
+
+/*
+	Dataset::getNPoints()
+	- Return the number of classes in the dataset
+*/
+size_t Dataset::getNClasses() const
+{	return nclasses_; }
+
+/*
+	Dataset::getNFeatures()
+	- Return the number of features in the dataset
+*/
+size_t Dataset::getNFeatures() const
+{	return nfeatures_; }
+
+/*
+	Dataset::getClass()
+	- Return a const reference to a class at a particular classID index
+*/
+const DataClass& Dataset::getClass(size_t classID) const
+{ return classes_[classID]; }
+
+/*
+	Dataset::write()
+	- Write out each class using a particular delimiter.
+*/
+void Dataset::write(std::ostream& out, const std::string& delim) const
+{
+	out << npoints_ << delim << nfeatures_ << delim << nclasses_ << std::endl;
+
+	for (size_t i = 0; i < classes_.size(); ++i)
+	{
+		classes_[i].write(out, delim);
+	}
+}
+
+/*
+	Dataset::splitEven()
+	- Split the dataset so that that the current class has 1/2 minimum class size number
+	  of points, and the returned Dataset contains the remaining points.
+*/
 Dataset Dataset::splitEven()
 {
 	size_t npoints = std::ceil((double)this->getMinPointsInClass() / 2.0);
@@ -94,6 +151,11 @@ Dataset Dataset::splitEven()
 	return Dataset(nfeatures_, nclasses_, npoints*nclasses_, newclasses);
 }
 
+/*
+	Dataset::splitEven()
+	- Split the dataset so that that 1/2 of the points from each class is returned in
+	  a new Dataset.
+*/
 Dataset Dataset::split()
 {
 	size_t nPointsRemoved = 0;
@@ -109,17 +171,11 @@ Dataset Dataset::split()
 	return Dataset(nfeatures_, nclasses_, nPointsRemoved, newclasses);
 }
 
-void Dataset::write(std::ostream& out, const std::string& delim) const
-{
-	out << npoints_ << delim << nfeatures_ << delim << nclasses_ << std::endl;
-
-	for (size_t i = 0; i < classes_.size(); ++i)
-	{
-		classes_[i].write(out, delim);
-	}
-}
-
-void Dataset::normalize(const double& a, const double& b)
+/*
+	Dataset::normalize()
+	- Scales all values between a and b.
+*/
+void Dataset::normalize(double a, double b)
 {
 	std::vector<double> mins;
 	std::vector<double> maxs;
@@ -153,27 +209,11 @@ void Dataset::normalize(const double& a, const double& b)
 	}
 }
 
-size_t Dataset::getNPoints() const
-{
-	return npoints_;
-}
-
-size_t Dataset::getNClasses() const
-{
-	return nclasses_;
-}
-
-size_t Dataset::getNFeatures() const
-{
-	return nfeatures_;
-}
-
-const DataClass& Dataset::getClass(const size_t& classID) const
-{
-	return classes_[classID];
-}
-
-double Dataset::calculateFDRForFeature(const size_t& featureID) const
+/*
+	Dataset::calculateFDRForFeature()
+	- Calculate the FDR value for a particular feature
+*/
+double Dataset::calculateFDRForFeature(size_t featureID) const
 {
 	double sum = 0.0;
 
@@ -200,6 +240,10 @@ double Dataset::calculateFDRForFeature(const size_t& featureID) const
 	return sum;
 }
 
+/*
+	Dataset::getMinPointsInClass()
+	- Return the minimum number of points in all the classes
+*/
 size_t Dataset::getMinPointsInClass() const
 {
 	size_t min = INT_MAX;
@@ -211,6 +255,10 @@ size_t Dataset::getMinPointsInClass() const
 	return min;
 }
 
+/*
+	Dataset::splitLineIntoList()
+	- Utility function to split a line into a list of items
+*/
 std::vector<std::string> Dataset::splitLineIntoList(const std::string& line) const
 {
 	std::stringstream ss(line);

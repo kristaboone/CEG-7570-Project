@@ -4,11 +4,21 @@
 #include <math.h>
 #include <fstream>
 
-BayesClassifier::BayesClassifier(const Dataset& ds, const size_t& feature, const double& featureMin, const double& featureMax)
+/*
+	BayesClassifier::BayesClassifier(constructor)
+	- Builds classifier by extracting information about a particular feature.
+	- Creates 1D binned array, and the class with the highest class conditional
+	  probability at a particular bin will be assigned to that bin.
+	- Decision regions are represented by groups of similar class IDs in the
+	  array, and decision boundaries are implicitely created by a change in the
+		class ID in the array.
+	- Assumes 1/10000 of feature range is appropriate enough granularity for bin sizes.
+*/
+BayesClassifier::BayesClassifier(const Dataset& ds, size_t feature, double featureMin, double featureMax)
 : featureMin_(featureMin), featureMax_(featureMax)
 {
 	// Calculate a-priori probabilities and probability densities for each class
-	// Create bin size that is (1/10)% of the overall feature range
+	// Create bin size that is 0.0001 * the overall feature range
 	binStep_ = 0.001 * (featureMax_ - featureMin_);
 	size_t nBins = (featureMax_ - featureMin_) / binStep_;
 
@@ -42,7 +52,15 @@ BayesClassifier::BayesClassifier(const Dataset& ds, const size_t& feature, const
 	// and therefore the decision boundaries between each class.
 }
 
-int BayesClassifier::classify(const double& datapoint) const
+/*
+	BayesClassifier::classify()
+	- Determines the class of a datapoint by assigning it to a particular decision region
+	- If the datapoint lies below the feature min or above the feature max, it is assigned
+	  to the class that is closest to that value.
+	- If the datapoint lies within the bounds of the training feature values, the
+	  correct bin is calculated, and the class ID in that bin is returned.
+*/
+int BayesClassifier::classify(double datapoint) const
 {
 	if (datapoint <= featureMin_)
 	{
@@ -59,6 +77,10 @@ int BayesClassifier::classify(const double& datapoint) const
 	}
 }
 
+/*
+	BayesClassifier::calculateClassConditionalProbability()
+	- Calculates class conditional probability from feature mean, variance, and value.
+*/
 double BayesClassifier::calculateClassConditionalProbability(double mean, double var, double point) const
 {
 	double var1 = 1.0 / (sqrt(2.0 * M_PI)* sqrt(var));
@@ -66,6 +88,11 @@ double BayesClassifier::calculateClassConditionalProbability(double mean, double
 	return var1 * var2;
 }
 
+/*
+	BayesClassifier::writeDistributions2CSV()
+	- Writes probability densitities for each class to a CSV file. Used to create
+	  plots used in the final report.
+*/
 void BayesClassifier::writeDistributions2CSV(const std::string& filename) const
 {
 	std::ofstream out(filename);

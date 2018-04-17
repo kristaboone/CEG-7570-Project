@@ -1,3 +1,10 @@
+/*
+	 Dataset.h
+	 Created by Krista Vanderhorst (2018)
+
+	 Holds n-dimensional, m-point feature data.
+	 Uses DataClass to encapsulate feature/point access.
+*/
 #pragma once
 #include "DataClass.h"
 #include <string>
@@ -6,20 +13,20 @@ class Dataset
 {
 public:
 	Dataset(const std::string& inputFile);
-	Dataset(const size_t nfeatures, const size_t nclasses, const size_t npoints, const std::vector<DataClass> classes);
+	Dataset(size_t nfeatures, size_t nclasses, size_t npoints, const std::vector<DataClass>& classes);
 
 	Dataset splitEven();
 	Dataset split();
 
 	void write(std::ostream& out, const std::string& delim) const;
-	void normalize(const double& a, const double& b);
+	void normalize(double a, double b);
 
 	size_t getNPoints() const;
 	size_t getNClasses() const;
 	size_t getNFeatures() const;
-	const DataClass& getClass(const size_t& classID) const;
+	const DataClass& getClass(size_t classID) const;
 
-	double calculateFDRForFeature(const size_t& featureID) const;	
+	double calculateFDRForFeature(size_t featureID) const;
 
 private:
 	std::vector<DataClass> classes_;
