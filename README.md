@@ -10,8 +10,11 @@ CMake installed, then follow these steps to build:
 3. Go into directory
 4. Type `cmake ../` to build the Part<n> source
 
-This should use your default compiler to compile the source into the build directory
+Use your default compiler to compile the source into the build directory
 you created.
+
+# Running the Projects
+To run the projects, ensure the data file is located in a path without spaces.
 
 # Content
 ## Folders
